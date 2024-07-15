@@ -2,7 +2,6 @@
   "name": "consult-patient-vue3",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -21,6 +20,7 @@
   },
   "dependencies": {
     "pinia": "^2.1.7",
+    "vant": "^4.9.2",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },
@@ -37,6 +37,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^15.2.7",
     "npm-run-all2": "^6.2.0",
+    "postcss-px-to-viewport": "^1.1.1",
     "prettier": "^3.2.5",
     "sass": "^1.77.8",
     "typescript": "~5.4.0",
