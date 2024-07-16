@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { loginByPassword, sendMobileCode } from '@/services/user'
+import { loginByMobile, loginByPassword, sendMobileCode } from '@/services/user'
 import { useUserStore } from '@/stores'
 import { codeRules, mobileRules, passwordRules } from '@/utils/rules'
 import { showSuccessToast, showToast, type FormInstance } from 'vant'
@@ -15,8 +15,10 @@ const router = useRouter()
 const route = useRoute()
 const onSubmit = async () => {
   if (!agree.value) return showToast('请勾选协议')
-  // TODO 进行登录
-  const res = await loginByPassword(mobile.value, password.value)
+  // 进行登录 (合并短信登录)
+  const res = isPass.value
+    ? await loginByPassword(mobile.value, password.value)
+    : await loginByMobile(mobile.value, code.value)
   store.setUser(res.data)
   showSuccessToast('登录成功')
   router.replace((route.query.returnUrl as string) || '/user')
