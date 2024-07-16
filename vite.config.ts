@@ -8,6 +8,10 @@ import Components from 'unplugin-vue-components/vite'
 // 配置 vant UI 组件库的解析器
 import { VantResolver } from 'unplugin-vue-components/resolvers'
 
+// svg插件
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import path from 'path'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -16,6 +20,10 @@ export default defineConfig({
     Components({
       dts: false,
       resolvers: [VantResolver({ importStyle: false })]
+    }),
+    createSvgIconsPlugin({
+      // eslint-disable-next-line no-undef
+      iconDirs: [path.resolve(process.cwd(), 'src/icons')]
     })
   ],
   // base: 'hm',
