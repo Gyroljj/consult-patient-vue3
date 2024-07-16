@@ -52,14 +52,20 @@ instance.interceptors.response.use(
 
 export default instance
 
-export const request = (
+type Data<T> = {
+  code: number
+  data: T
+  message: string
+}
+
+export const request = <T>(
   url: string,
   method: Method = 'GET',
   submitData?: object
 ) => {
   // 参数：地址，请求方式，提交的数据
   // 返回：Promise
-  return instance.request({
+  return instance.request<any, Data<T>>({
     url,
     method,
     [method.toUpperCase() === 'GET' ? 'params' : 'data']: submitData

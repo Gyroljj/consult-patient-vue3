@@ -2,6 +2,7 @@
 import { Button as VanButton } from 'vant'
 import { useUserStore } from './stores'
 import { request } from './utils/request'
+import type { User } from './types/user'
 
 const store = useUserStore()
 
@@ -24,10 +25,18 @@ const login = () => {
   //   .catch((err) => {
   //     console.log('失败：', err)
   //   })
-  request('/login/password', 'POST', {
+
+  // 判断响应数据的类型是否正确？如果不正确怎么去设置类型
+  request<User>('/login/password', 'POST', {
     mobile: '13211112222',
     password: 'abc12345'
   })
+    .then((res) => {
+      console.log('成功', res)
+    })
+    .catch((err) => {
+      console.log('失败：', err)
+    })
 }
 </script>
 
