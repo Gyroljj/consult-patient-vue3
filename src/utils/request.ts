@@ -35,7 +35,7 @@ instance.interceptors.response.use(
     return res.data
   },
   (err: AxiosError) => {
-    // TODO 5. 处理401错误
+    // 5. 处理401错误
     if (err.response?.status === 401) {
       // 清除本地的用户信息
       const store = useUserStore()
