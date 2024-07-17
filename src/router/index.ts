@@ -12,7 +12,8 @@ const router = createRouter({
   routes: [
     {
       path: '/login',
-      component: () => import('@/views/Login/index.vue')
+      component: () => import('@/views/Login/index.vue'),
+      meta: { title: '登录' }
     },
     {
       path: '/',
@@ -21,19 +22,23 @@ const router = createRouter({
       children: [
         {
           path: '/home',
-          component: () => import('@/views/Home/index.vue')
+          component: () => import('@/views/Home/index.vue'),
+          meta: { title: '首页' }
         },
         {
           path: '/article',
-          component: () => import('@/views/Article/index.vue')
+          component: () => import('@/views/Article/index.vue'),
+          meta: { title: '建康百科' }
         },
         {
           path: '/notify',
-          component: () => import('@/views/Notify/index.vue')
+          component: () => import('@/views/Notify/index.vue'),
+          meta: { title: '消息通知' }
         },
         {
           path: '/user',
-          component: () => import('@/views/User/index.vue')
+          component: () => import('@/views/User/index.vue'),
+          meta: { title: '个人中心' }
         }
       ]
     }
@@ -41,7 +46,7 @@ const router = createRouter({
 })
 // console.log(import.meta)
 
-// 全局的前置导航
+// 全局的前置导航守卫
 router.beforeEach((to) => {
   // 获取 token 的
   const store = useUserStore()
@@ -51,6 +56,11 @@ router.beforeEach((to) => {
   if (!store.user?.token && !wihteList.includes(to.path)) {
     return '/login'
   }
+})
+
+// 全局的后置导航守卫
+router.afterEach((to) => {
+  document.title = `${to.meta.title || ''}-优医问诊`
 })
 
 export default router
