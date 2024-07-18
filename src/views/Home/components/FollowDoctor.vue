@@ -42,9 +42,6 @@ onMounted(() => {
         :width="(150 / 375) * width"
         :show-indicators="false"
         :loop="false"
-        class="my-swipe"
-        :autoplay="3000"
-        indicator-color="white"
       >
         <van-swipe-item v-for="item in list" :key="item.id">
           <doctor-card :item="item"></doctor-card>
