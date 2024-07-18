@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { addPatient, getPatientList } from '@/services/user'
+import { addPatient, editPatient, getPatientList } from '@/services/user'
 import type { Patient, PatientList } from '@/types/user'
 import { idCardRules, nameRules } from '@/utils/rules'
 import { showConfirmDialog, showSuccessToast, type FormInstance } from 'vant'
@@ -23,8 +23,14 @@ const options = [
 
 // 控制popup
 const show = ref(false)
-const showPopup = () => {
-  patient.value = { ...initPaient }
+const showPopup = (item?: Patient) => {
+  if (item) {
+    const { id, name, idCard, gender, defaultFlag } = item
+    patient.value = { id, name, idCard, gender, defaultFlag }
+  } else {
+    form.value?.resetValidation()
+    patient.value = { ...initPaient }
+  }
   show.value = true
 }
 const initPaient: Patient = {
@@ -57,12 +63,14 @@ const onSubmit = async () => {
       message: '填写的性别和身份证号中的不一致\n您确认提交吗？'
     })
   }
-  // 提交即可
-  await addPatient(patient.value)
+  // 提交即可 添加 或者 编辑
+  patient.value.id
+    ? await editPatient(patient.value)
+    : await addPatient(patient.value)
   // 成功：关闭添加患者弹窗，加载患者列表，成功提示
   show.value = false
   loadList()
-  showSuccessToast('添加成功')
+  showSuccessToast(patient.value.id ? '编辑成功' : '添加成功')
 }
 </script>
 
@@ -79,10 +87,12 @@ const onSubmit = async () => {
           <span>{{ item.genderValue }}</span>
           <span>{{ item.age }}</span>
         </div>
-        <div class="icon"><cp-icon name="user-edit" /></div>
+        <div class="icon" @click="showPopup(item)">
+          <cp-icon name="user-edit" />
+        </div>
         <div class="tag" v-if="item.defaultFlag === 1">默认</div>
       </div>
-      <div class="patient-add" v-if="list.length < 6" @click="showPopup">
+      <div class="patient-add" v-if="list.length < 6" @click="showPopup()">
         <cp-icon name="user-add" />
         <p>添加患者</p>
       </div>
@@ -91,7 +101,7 @@ const onSubmit = async () => {
     <!-- 使用 popup 组件 -->
     <van-popup position="right" v-model:show="show">
       <cp-nav-bar
-        title="添加患者"
+        :title="patient.id ? '编辑患者' : '添加患者'"
         right-text="保存"
         :back="() => (show = false)"
         @click-right="onSubmit"
