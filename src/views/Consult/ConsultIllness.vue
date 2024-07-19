@@ -79,7 +79,7 @@ const next = () => {
   // 记录病情
   store.setIllness(form.value)
   // 调转，携带标识
-  router.push('/user/patient?ischange=1')
+  router.push('/user/patient?isChange=1')
 }
 
 // 数据的回显
