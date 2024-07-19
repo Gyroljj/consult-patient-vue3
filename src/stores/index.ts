@@ -13,3 +13,4 @@ export default pinia
 // export { useUserStore }
 
 export * from './modules/user'
+export * from './modules/consult'
