@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { createConsultOrder, getConsultOrderPre } from '@/services/consult'
+import {
+  createConsultOrder,
+  getConsultOrderPayUrl,
+  getConsultOrderPre
+} from '@/services/consult'
 import { getPatientDetail } from '@/services/user'
 import { useConsultStore } from '@/stores'
 import type { ConsultOrderPreData, PartialConsult } from '@/types/consult'
 import type { Patient } from '@/types/user'
-import { showConfirmDialog, showDialog, showToast } from 'vant'
+import {
+  showConfirmDialog,
+  showDialog,
+  showLoadingToast,
+  showToast
+} from 'vant'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 
@@ -62,7 +71,7 @@ const agree = ref(false)
 // 生成订单
 
 const show = ref(false)
-const paymentMethod = ref<0 | 1>()
+const paymentMethod = ref<0 | 1>(1)
 const loading = ref(false)
 const orderId = ref('')
 const submit = async () => {
@@ -101,6 +110,18 @@ const onClose = () => {
       router.push('/user/consult')
       return true
     })
+}
+
+// 支付逻辑
+const pay = async () => {
+  if (paymentMethod.value === undefined) return showToast('请选择支付方式')
+  showLoadingToast({ message: '跳转支付', duration: 0 })
+  const res = await getConsultOrderPayUrl({
+    paymentMethod: paymentMethod.value,
+    orderId: orderId.value,
+    payCallback: 'http://localhost:5173/room'
+  })
+  window.location.href = res.data.payUrl
 }
 </script>
 
@@ -165,12 +186,14 @@ const onClose = () => {
           <van-cell title="支付宝支付" @click="paymentMethod = 1">
             <template #icon><cp-icon name="consult-alipay" /></template>
             <template #extra>
-              <van-checkbox :checked="paymentMethod !== 0" />
+              <van-checkbox :checked="paymentMethod === 1" />
             </template>
           </van-cell>
         </van-cell-group>
         <div class="btn">
-          <van-button type="primary" round block>立即支付</van-button>
+          <van-button @click="pay" type="primary" round block>
+            立即支付
+          </van-button>
         </div>
       </div>
     </van-action-sheet>
