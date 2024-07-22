@@ -65,6 +65,18 @@ onMounted(() => {
 onUnmounted(() => {
   socket.close()
 })
+
+// 发送文字信息
+const onSendText = (text: string) => {
+  socket.emit('sendChatMsg', {
+    from: store.user?.id,
+    to: consult.value?.docInfo?.id,
+    msgType: MsgType.MsgText,
+    msg: {
+      content: text
+    }
+  })
+}
 </script>
 
 <template>
@@ -83,6 +95,7 @@ onUnmounted(() => {
     ></room-message>
     <!-- 操作栏 -->
     <room-action
+      @send-text="onSendText($event)"
       :disabled="consult?.status !== OrderType.ConsultChat"
     ></room-action>
   </div>
