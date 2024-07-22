@@ -2,6 +2,24 @@
 import RoomStatus from './components/RoomStatus.vue'
 import RoomAction from './components/RoomAction.vue'
 import RoomMessage from './components/RoomMessage.vue'
+import { io } from 'socket.io-client'
+// 建立连接
+const socket = io('https://5q4g9q-3000.csb.app/')
+
+socket.on('connect', () => {
+  console.log('连接成功')
+  // 发送消息
+  socket.emit('chat message', '你好')
+})
+
+socket.on('chat message', (msg) => {
+  console.log(msg)
+  socket.close()
+})
+
+socket.on('disconnect', () => {
+  console.log('断开连接')
+})
 </script>
 
 <template>
