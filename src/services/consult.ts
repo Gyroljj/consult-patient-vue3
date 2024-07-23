@@ -44,3 +44,6 @@ export const getConsultOrderPayUrl = (data: {
 
 export const getConsultOrderDetail = (orderId: string) =>
   request<ConsultOrderItem>('/patient/consult/order/detail', 'GET', { orderId })
+
+export const getPrescriptionPic = (id: string) =>
+  request<{ url: string }>(`/patient/consult/prescription/${id}`)
