@@ -22,7 +22,7 @@ const onSubmit = async () => {
   if (!score.value) return showToast('请选择评分')
   if (!content.value) return showToast('请填写评价内容')
   if (!consult?.value) return showToast('未找到订单')
-  // TODO: 提交评价信息
+  // 提交评价信息
   if (consult.value.docInfo) {
     await evaluateConsultOrder({
       docId: consult?.value.docInfo?.id,
