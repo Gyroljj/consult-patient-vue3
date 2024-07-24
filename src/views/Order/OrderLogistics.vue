@@ -3,13 +3,37 @@ import { getMedicalOrderLogistics } from '@/services/order'
 import type { Logistics } from '@/types/order'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import AMapLoader from '@amap/amap-jsapi-loader'
 
 const route = useRoute()
 const logistics = ref<Logistics>()
 onMounted(async () => {
   const res = await getMedicalOrderLogistics(route.params.id as string)
   logistics.value = res.data
+
+  initMap()
 })
+
+window._AMapSecurityConfig = {
+  securityJsCode: '4bbcc2456532f03e7bb7a65f3edb983d'
+}
+const initMap = () => {
+  AMapLoader.load({
+    key: 'e9648758234ba693aa98b5c0f34c8380', //申请好的Web端开发者 Key，调用 load 时必填
+    version: '2.0' //指定要加载的 JS API 的版本，缺省时默认为 1.4.15
+  })
+    .then((AMap) => {
+      // 初始化地图
+      const map = new AMap.Map('map', {
+        // 配置对象
+        mapStyle: 'amap://styles/whitesmoke',
+        zoom: 12
+      })
+    })
+    .catch((e) => {
+      console.error(e) //加载错误提示
+    })
+}
 </script>
 
 <template>
