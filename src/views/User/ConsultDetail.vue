@@ -8,8 +8,11 @@ import { OrderType } from '@/enums'
 import { getConsultOrderDetail } from '@/services/consult'
 import type { ConsultOrderItem } from '@/types/consult'
 import { getConsultFlagText, getIllnessTimeText } from '@/utils/filter'
+import { useClipboard } from '@vueuse/core'
+import { showToast } from 'vant'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import ConsultMore from './components/ConsultMore.vue'
 
 const route = useRoute()
 const item = ref<ConsultOrderItem>()
@@ -26,6 +29,14 @@ const { loading: deleteLoading, deleteConsultOrder } = useDeleteOrder(() => {
 })
 
 const { onShowPrescription } = useShowPrescription()
+
+// 复制
+const { copy, isSupported } = useClipboard()
+const onCopy = async () => {
+  if (!isSupported.value) return showToast('未授权，不支持')
+  await copy(item.value?.orderNo || '')
+  showToast('已复制')
+}
 </script>
 
 <template>
@@ -75,7 +86,7 @@ const { onShowPrescription } = useShowPrescription()
       <van-cell-group :border="false">
         <van-cell title="订单编号">
           <template #value>
-            <span class="copy">复制</span>
+            <span class="copy" @click="onCopy()">复制</span>
             {{ item.orderNo }}
           </template>
         </van-cell>
@@ -149,11 +160,11 @@ const { onShowPrescription } = useShowPrescription()
       class="detail-action van-hairline--top"
       v-if="item.status === OrderType.ConsultComplete"
     >
-      <consult-mor
+      <consult-more
         :disabled="!item.prescriptionId"
         @on-preview="onShowPrescription(item.prescriptionId)"
         @on-delete="deleteConsultOrder(item)"
-      ></consult-mor>
+      ></consult-more>
       <van-button type="default" round :to="`/room?orderId=${item.id}`">
         问诊记录
       </van-button>
