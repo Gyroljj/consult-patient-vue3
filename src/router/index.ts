@@ -120,9 +120,9 @@ router.beforeEach((to) => {
   // 获取 token 的
   const store = useUserStore()
   // 白名单页面
-  const wihteList = ['/login']
+  const whiteList = ['/login', '/login/callback']
   // 如果你没有token并且不再白名单页面，就重定向到登录页面
-  if (!store.user?.token && !wihteList.includes(to.path)) {
+  if (!store.user?.token && !whiteList.includes(to.path)) {
     return '/login'
   }
 })
