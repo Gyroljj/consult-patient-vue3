@@ -14,6 +14,8 @@ import path from 'path'
 
 import { createHtmlPlugin } from 'vite-plugin-html'
 
+import { viteMockServe } from 'vite-plugin-mock'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
@@ -21,6 +23,12 @@ export default defineConfig({
     host: true
   },
   plugins: [
+    viteMockServe({
+      // 在哪个文件夹下编写模拟接口的代码
+      mockPath: './src/mock',
+      // 在开发环境开启mock
+      localEnabled: true
+    }),
     createHtmlPlugin(),
     vue(),
     // 样式重复引用，类型声明文件重复了
