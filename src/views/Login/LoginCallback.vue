@@ -1,9 +1,13 @@
 <script setup lang="ts">
 /* global QC */
 import { useMobileCode } from '@/composables'
-import { loginByQQ } from '@/services/user'
+import { bindMobile, loginByQQ } from '@/services/user'
+import { useUserStore } from '@/stores'
+import type { User } from '@/types/user'
 import { codeRules, mobileRules } from '@/utils/rules'
+import { showSuccessToast } from 'vant'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const openId = ref('')
 const isNeedBind = ref(false)
@@ -12,8 +16,9 @@ onMounted(() => {
     QC.Login.getMe((id: string) => {
       openId.value = id
       loginByQQ(id)
-        .then(() => {
+        .then((res) => {
           // 登录成功
+          loginSuccess(res)
         })
         .catch(() => {
           // 登录失败
@@ -26,6 +31,26 @@ onMounted(() => {
 const mobile = ref('')
 const code = ref('')
 const { onSend, time, form } = useMobileCode(mobile, 'bindMobile')
+
+const store = useUserStore()
+const router = useRouter()
+// 成功的逻辑
+const loginSuccess = (res: { data: User }) => {
+  store.setUser(res.data)
+  router.replace(store.returnUrl || '/user')
+  showSuccessToast('登录成功')
+  store.setReturnUrl('')
+}
+// 绑定手机
+const bind = async () => {
+  const res = await bindMobile({
+    mobile: mobile.value,
+    code: code.value,
+    openId: openId.value
+  })
+  // 执行成功逻辑
+  loginSuccess(res)
+}
 </script>
 
 <template>
@@ -34,7 +59,7 @@ const { onSend, time, form } = useMobileCode(mobile, 'bindMobile')
     <div class="login-head">
       <h3>手机绑定</h3>
     </div>
-    <van-form autocomplete="off" ref="form">
+    <van-form autocomplete="off" ref="form" @submit="bind">
       <van-field
         v-model="mobile"
         :rules="mobileRules"
