@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "test": "vitest",
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
@@ -56,6 +57,7 @@
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-mock": "2.9.6",
     "vite-plugin-svg-icons": "^2.0.1",
+    "vitest": "^2.0.4",
     "vue-tsc": "^2.0.21"
   }
 }
